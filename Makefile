@@ -1,4 +1,4 @@
-# StockTicker Service Makefile
+# Stockticker Service Makefile
 
 # Variables
 IMAGE = saedabdu/stockservice:latest
@@ -16,11 +16,12 @@ default: help
 # Help
 .PHONY: help
 help:
-	@echo "Stock Ticker Service - Simple Commands"
+	@echo "Stockticker Service"
 	@echo "===================================="
 	@echo ""
 	@echo "  build       - Build Docker image"
-	@echo "  run         - Run locally (SYMBOL, NDAYS, API_KEY required)"
+	@echo "  run         - Run locally (SYMBOL, NDAYS, ALPHAVANTAGE_API_KEY required)"
+	@echo "  deploy      - Deploy to Minikube"
 	@echo ""
 
 # Build Docker image
@@ -35,10 +36,18 @@ build:
 run:
 	$(call check_defined,SYMBOL)
 	$(call check_defined,NDAYS)
-	$(call check_defined,API_KEY)
-	@echo "Running container..."
+	$(call check_defined,ALPHAVANTAGE_API_KEY)
+	@make build
 	@docker run -p $(PORT):$(PORT) \
 		-e SYMBOL=$(SYMBOL) \
 		-e NDAYS=$(NDAYS) \
-		-e API_KEY=$(API_KEY) \
+		-e ALPHAVANTAGE_API_KEY=$(API_KEY) \
 		$(IMAGE)
+
+# Deploy to Minikube
+.PHONY: deploy
+deploy:
+	@echo "Deploying to Minikube..."
+	@kubectl apply -f kubernetes/deployment.yaml
+	@echo "Deployed to Minikube"
+
