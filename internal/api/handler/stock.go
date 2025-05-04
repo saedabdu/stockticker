@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -42,4 +43,27 @@ func (h *StockHandler) HandleStocks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.sendJSONResponse(w, response)
+}
+
+// sendJSONResponse sends a JSON response to the client
+func (h *StockHandler) sendJSONResponse(w http.ResponseWriter, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		log.Printf("Error encoding JSON response: %v", err)
+		http.Error(w, "Error encoding response", http.StatusInternalServerError)
+	}
+}
+
+// sendErrorResponse sends an error response to the client
+func (h *StockHandler) sendErrorResponse(w http.ResponseWriter, message string, statusCode int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+
+	response := api.ErrorResponse{Error: message}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding error response: %v", err)
+		http.Error(w, "Error encoding response", http.StatusInternalServerError)
+	}
 }
