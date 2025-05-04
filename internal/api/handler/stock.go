@@ -45,6 +45,16 @@ func (h *StockHandler) HandleStocks(w http.ResponseWriter, r *http.Request) {
 	h.sendJSONResponse(w, response)
 }
 
+// HandleHealth handles requests to the /health endpoint
+func (h *StockHandler) HandleHealth(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	h.sendJSONResponse(w, api.HealthResponse{Status: "healthy"})
+}
+
 // sendJSONResponse sends a JSON response to the client
 func (h *StockHandler) sendJSONResponse(w http.ResponseWriter, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")

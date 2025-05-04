@@ -37,6 +37,7 @@ func main() {
 
 	// Setup routes
 	http.HandleFunc("/stocks", stockHandler.HandleStocks)
+	http.HandleFunc("/health", stockHandler.HandleHealth)
 
 	// Start HTTP server
 	server := &http.Server{
