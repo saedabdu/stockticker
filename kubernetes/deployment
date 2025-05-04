@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stockticker-config
+data:
+  SYMBOL: "MSFT"
+  NDAYS: "7"
+  PORT: "8080"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: stockticker-secret
+type: Opaque
+stringData:
+  API_KEY: "YOUR_API_KEY"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stockticker
+  labels:
+    app: stockticker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stockticker
+  template:
+    metadata:
+      labels:
+        app: stockticker
+    spec:
+      containers:
+      - name: stockticker
+        image: stockticker:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: stockticker-config
+        - secretRef:
+            name: stockticker-secret
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "128Mi"
+          requests:
+            cpu: "0.1"
+            memory: "64Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stockticker
+  labels:
+    app: stockticker
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: stockticker
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: stockticker-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: stockticker
+            port:
+              number: 80
