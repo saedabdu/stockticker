@@ -14,6 +14,11 @@ import (
 const (
 	baseURL  = "https://www.alphavantage.co/query"
 	function = "TIME_SERIES_DAILY"
+	// Alpha Vantage outputsize options
+	outputSizeCompact = "compact" // Returns the latest 100 data points
+	outputSizeFull    = "full"    // Returns up to 20+ years of historical data
+	// Threshold for when to use full output size
+	compactOutputSizeLimit = 100
 )
 
 // AlphaVantage is the AlphaVantage API client
@@ -33,11 +38,18 @@ func NewAlphaVantage(apiKey string) *AlphaVantage {
 }
 
 // GetStockData retrieves stock data from the AlphaVantage API
-func (c *AlphaVantage) GetStockData(symbol string) (*models.AlphaVantageResponse, error) {
+func (c *AlphaVantage) GetStockData(symbol string, days int) (*models.AlphaVantageResponse, error) {
 	params := url.Values{}
 	params.Add("apikey", c.apiKey)
 	params.Add("function", function)
 	params.Add("symbol", symbol)
+
+	// Determine the appropriate output size based on the requested number of days
+	if days > compactOutputSizeLimit {
+		params.Add("outputsize", outputSizeFull)
+	} else {
+		params.Add("outputsize", outputSizeCompact)
+	}
 
 	reqURL := fmt.Sprintf("%s?%s", baseURL, params.Encode())
 

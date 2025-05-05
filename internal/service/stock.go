@@ -41,8 +41,8 @@ func (s *StockService) GetStockData() (*models.StockData, error) {
 		return cachedData.(*models.StockData), nil
 	}
 
-	// Get data from the API
-	apiResponse, err := s.client.GetStockData(s.config.Symbol)
+	// Get data from the API - pass the number of days to ensure we get enough data
+	apiResponse, err := s.client.GetStockData(s.config.Symbol, s.config.NDays)
 	if err != nil {
 		return nil, err
 	}
