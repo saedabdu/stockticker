@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: stockticker
-        image: saedabdu/stockservice:latest
+        image: saedabdu/stockticker:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

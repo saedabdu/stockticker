@@ -1,7 +1,7 @@
 # Stockticker Service Makefile
 
 # Variables
-IMAGE_NAME = saedabdu/stockservice
+IMAGE_NAME = saedabdu/stockticker
 IMAGE_TAG = latest
 PORT = 8080
 K8S_DIR = kubernetes
@@ -65,6 +65,7 @@ check:
 	@echo "Ensuring Minikube is running..."
 	@minikube status > /dev/null 2>&1 || (echo "Starting Minikube..." && minikube start)
 	@echo "✅ Minikube is running"
+
 # Build Docker image
 build:
 	@echo "Building Docker image: $(IMAGE_NAME):$(IMAGE_TAG)..."
@@ -94,7 +95,7 @@ deploy:
 	@echo "✅ Deployed to Minikube"
 	@echo "Deployment status:"
 	@kubectl get pods -l app=stockticker
-	@echo "✅ Try it in your browser or run: curl http://$(shell minikube ip):30080/health"
+
 
 # Forward service to localhost:8080
 .PHONY: port-forward
