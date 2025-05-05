@@ -1,8 +1,10 @@
 # Stockticker Service Makefile
 
 # Variables
-IMAGE = saedabdu/stockservice:latest
+IMAGE_NAME = saedabdu/stockservice
+IMAGE_TAG = latest
 PORT = 8080
+K8S_DIR = kubernetes
 
 # Helper to Detect OS and set variables
 OS := $(shell uname -s)
@@ -27,7 +29,7 @@ endef
 
 # Helper if a command exists
 define check_command
-	@which $1 > /dev/null 2>&1 || (echo "$1 not found. Installing..." && $(2))
+	@which $1 > /dev/null 2>&1 || (echo "❌$1 not found. Installing..." && $(2))
 endef
 
 # Default target shows help
@@ -40,27 +42,35 @@ help:
 	@echo "Stockticker Service"
 	@echo "===================================="
 	@echo ""
-	@echo "  check 		 - Check prerequisites"
-	@echo "  build       - Build Docker image"
-	@echo "  run         - Run locally (SYMBOL, NDAYS, API_KEY required)"
-	@echo "  deploy      - Deploy to Minikube"
+	@echo "  check 		 	- Check prerequisites"
+	@echo "  build       	- Build Docker image"
+	@echo "  run         	- Run locally (SYMBOL, NDAYS, API_KEY required)"
+	@echo "  deploy      	- Deploy to Minikube"
+	@echo "  port-forward 	- Forward service to localhost:8080"
 	@echo ""
 
 # Check for required tools
-.PHONY: check-prerequisites
-check-prerequisites:
+.PHONY: check
+check:
 	@echo "Checking prerequisites..."
 	$(call check_command,docker,echo "Please install Docker from https://docs.docker.com/get-docker/")
 	$(call check_command,kubectl,echo "Please install kubectl from https://kubernetes.io/docs/tasks/tools/")
 	$(call check_command,minikube,$(INSTALL_MINIKUBE_CMD))
-	@echo "All prerequisites are installed"
+	@echo "✅ All prerequisites are installed"
 
+	@echo "Ensuring Docker is running..."
+	@docker info > /dev/null 2>&1 || (echo "❌ Docker is not running. Please start Docker." && exit 1)
+	@echo "✅ Docker is running"
+
+	@echo "Ensuring Minikube is running..."
+	@minikube status > /dev/null 2>&1 || (echo "Starting Minikube..." && minikube start)
+	@echo "✅ Minikube is running"
 # Build Docker image
-.PHONY: build
 build:
-	@echo "Building image..."
-	@docker build -t $(IMAGE) .
-	@echo "Image built"
+	@echo "Building Docker image: $(IMAGE_NAME):$(IMAGE_TAG)..."
+	docker build -t $(IMAGE_NAME):$(IMAGE_TAG) .
+	@echo "✅ Docker image build complete"
+	@docker images | grep $(IMAGE_NAME) | grep $(IMAGE_TAG)
 
 # Run locally in Docker
 .PHONY: run
@@ -73,12 +83,25 @@ run:
 		-e SYMBOL=$(SYMBOL) \
 		-e NDAYS=$(NDAYS) \
 		-e API_KEY=$(API_KEY) \
-		$(IMAGE)
+		$(IMAGE_NAME):$(IMAGE_TAG)
 
 # Deploy to Minikube
 .PHONY: deploy
 deploy:
 	@echo "Deploying to Minikube..."
-	@kubectl apply -f kubernetes/deployment.yaml
-	@echo "Deployed to Minikube"
+	@kubectl config use-context minikube
+	@kubectl apply -f $(K8S_DIR)/deployment.yaml
+	@echo "✅ Deployed to Minikube"
+	@echo "Deployment status:"
+	@kubectl get pods -l app=stockticker
+	@echo "✅ Try it in your browser or run: curl http://$(shell minikube ip):30080/health"
 
+# Forward service to localhost:8080
+.PHONY: port-forward
+port-forward:
+	@echo "Setting up port forwarding to localhost:8080..."
+	@echo "Stopping any existing port forwards on port 8080..."
+	@lsof -ti:8080 | xargs kill -9 || true >/dev/null 2>&1 &
+	@kubectl port-forward svc/stockticker 8080:80 >/dev/null 2>&1 &
+	@echo "✅ Service is now available at: http://localhost:8080"
+	@echo "✅ Health check URL: http://localhost:8080/health"
