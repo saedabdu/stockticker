@@ -103,7 +103,7 @@ For local development without Docker:
 
 ### Kubernetes Deployment
 
-To deploy the service to Kubernetes:
+To deploy the service to Kubernetes (Minikube):
 
 1. Clone the repository and navigate to the project directory (if not already done):
    ```bash
