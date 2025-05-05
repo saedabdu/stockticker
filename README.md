@@ -147,6 +147,29 @@ To deploy the service to Kubernetes (Minikube):
 | `NDAYS` | Number of days of historical data | `7` |
 | `API_KEY` | Alpha Vantage API key | Required |
 
+### Sample Response
+
+```json
+{
+  "symbol": "MSFT",
+  "prices": [
+    {"date": "2025-05-02", "close": 435.28},
+    {"date": "2025-05-01", "close": 425.4},
+    {"date": "2025-04-30", "close": 395.26},
+    {"date": "2025-04-29", "close": 394.04},
+    {"date": "2025-04-28", "close": 391.16},
+    {"date": "2025-04-25", "close": 391.85},
+    {"date": "2025-04-24", "close": 387.3}
+  ],
+  "average": 402.8985714285715
+}
+```
+
+The response includes:
+- `symbol`: The stock ticker symbol
+- `prices`: An array of daily closing prices with dates
+- `average`: The average closing price over the requested period
+
 ## Troubleshooting
 
 - **Connection issues**
