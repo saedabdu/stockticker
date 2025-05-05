@@ -1,6 +1,6 @@
 # Stockticker API
 
-A lightweight microservice for retrieving stock ticker information using the AlphaVantage API.
+A lightweight microservice for retrieving and caching stock ticker information using the AlphaVantage API.
 
 ## Project Structure
 
@@ -14,6 +14,8 @@ stockticker/
 |   |   |-- handler/
 |   |   |   `-- stock.go         # HTTP handlers
 |   |   `-- models.go            # API response/request models
+|   |-- cache/
+|   |   `-- cache.go             # Simple in-memory cache
 |   |-- client/
 |   |   `-- alphavantage.go      # External API client
 |   |-- config/
