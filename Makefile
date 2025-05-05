@@ -44,7 +44,7 @@ help:
 	@echo ""
 	@echo "  check 		 	- Check prerequisites"
 	@echo "  build       	- Build Docker image"
-	@echo "  run         	- Run locally (SYMBOL, NDAYS, API_KEY required)"
+	@echo "  run         	- Run locally (SYMBOL, N_DAYS, API_KEY required)"
 	@echo "  deploy      	- Deploy to Minikube"
 	@echo "  port-forward 	- Forward service to localhost:8080"
 	@echo ""
@@ -77,12 +77,12 @@ build:
 .PHONY: run
 run:
 	$(call check_defined,SYMBOL)
-	$(call check_defined,NDAYS)
+	$(call check_defined,N_DAYS)
 	$(call check_defined,API_KEY)
 	@make build
 	@docker run -p $(PORT):$(PORT) \
 		-e SYMBOL=$(SYMBOL) \
-		-e NDAYS=$(NDAYS) \
+		-e N_DAYS=$(N_DAYS) \
 		-e API_KEY=$(API_KEY) \
 		$(IMAGE_NAME):$(IMAGE_TAG)
 

@@ -59,7 +59,7 @@ The simplest way to run the service:
 
 3. Run the service:
    ```bash
-   SYMBOL=MSFT NDAYS=7 API_KEY=your_alphavantage_api_key make run
+   SYMBOL=MSFT N_DAYS=7 API_KEY=your_alphavantage_api_key make run
    ```
 
 4. Access the service at http://localhost:8080
@@ -82,7 +82,7 @@ For local development without Docker:
 3. Set the required environment variables:
    ```bash
    export SYMBOL=MSFT
-   export NDAYS=7
+   export N_DAYS=7
    export API_KEY=your_alphavantage_api_key
    ```
 
@@ -118,7 +118,7 @@ To deploy the service to Kubernetes (Minikube):
    make check
    ```
 
-3. Update the Kubernetes secret in `kubernetes/deployment.yaml` with your Alpha Vantage API key
+3. Update the Kubernetes secret `stockticker-secret` in `kubernetes/deployment.yaml` with your Alpha Vantage API key
 
 4. Deploy to Minikube:
    ```bash
