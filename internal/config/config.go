@@ -27,10 +27,10 @@ func New() (*Config, error) {
 	apiKey := os.Getenv("API_KEY")
 	symbol := getEnvOrDefault("SYMBOL", DefaultSymbol)
 
-	nDaysStr := getEnvOrDefault("N_DAYS", strconv.Itoa(DefaultNDays))
+	nDaysStr := getEnvOrDefault("NDAYS", strconv.Itoa(DefaultNDays))
 	nDays, err := strconv.Atoi(nDaysStr)
 	if err != nil {
-		return nil, fmt.Errorf("invalid N_DAYS value: %w", err)
+		return nil, fmt.Errorf("invalid NDAYS value: %w", err)
 	}
 
 	if apiKey == "" {

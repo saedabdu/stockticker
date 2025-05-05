@@ -188,4 +188,3 @@ The response includes:
   # Check container logs
   kubectl logs -l app=stockticker
   ```
-
