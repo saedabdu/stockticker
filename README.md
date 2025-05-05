@@ -68,8 +68,8 @@ For local development without Docker:
 
 1. Clone the repository and navigate to the project directory:
    ```bash
-   git clone https://github.com/saedabdu/stock-ticker.git
-   cd stock-ticker
+   git clone https://github.com/saedabdu/stockticker.git
+   cd stockticker
    ```
 
 2. Install dependencies:
@@ -107,8 +107,8 @@ To deploy the service to Kubernetes (Minikube):
 
 1. Clone the repository and navigate to the project directory (if not already done):
    ```bash
-   git clone https://github.com/saedabdu/stock-ticker.git
-   cd stock-ticker
+   git clone https://github.com/saedabdu/stockticker.git
+   cd stockticker
    ```
 
 2. Check prerequisites:
