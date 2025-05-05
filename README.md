@@ -59,7 +59,7 @@ The simplest way to run the service:
 
 3. Run the service:
    ```bash
-   SYMBOL=MSFT N_DAYS=7 API_KEY=your_alphavantage_api_key make run
+   SYMBOL=MSFT NDAYS=7 API_KEY=your_alphavantage_api_key make run
    ```
 
 4. Access the service at http://localhost:8080
@@ -82,7 +82,7 @@ For local development without Docker:
 3. Set the required environment variables:
    ```bash
    export SYMBOL=MSFT
-   export N_DAYS=7
+   export NDAYS=7
    export API_KEY=your_alphavantage_api_key
    ```
 
