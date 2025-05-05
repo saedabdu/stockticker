@@ -29,7 +29,7 @@ endef
 
 # Helper if a command exists
 define check_command
-	@which $1 > /dev/null 2>&1 || (echo "❌$1 not found. Installing..." && $(2))
+	@which $1 > /dev/null 2>&1 || (echo "❌$1 not found." && $(2))
 endef
 
 # Default target shows help
