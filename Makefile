@@ -91,6 +91,7 @@ run:
 deploy:
 	@echo "Deploying to Minikube..."
 	@kubectl config use-context minikube
+	@minikube image load $(IMAGE_NAME):$(IMAGE_TAG)
 	@kubectl apply -f $(K8S_DIR)/deployment.yaml
 	@echo "✅ Deployed to Minikube"
 	@echo "Deployment status:"
