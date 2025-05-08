@@ -30,9 +30,35 @@ stockticker/
 `-- README.md                    # Documentation
 ```
 
+## Data Flow
+
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌───────────────┐
+│  HTTP       │    │  Handler    │    │  Service    │    │  Cache        │
+│  Request    │───>│  Layer      │───>│  Layer      │───>│  (Check)      │
+└─────────────┘    └─────────────┘    └─────────────┘    └───────────────┘
+                                                                │
+                                                                │ (Cache Miss)
+                                                                ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌───────────────┐
+│  HTTP       │    │  Handler    │    │  Service    │    │  API Client   │
+│  Response   │<───│  Layer      │<───│  Layer      │<───│  (Fetch)      │
+└─────────────┘    └─────────────┘    └─────────────┘    └───────────────┘
+                                            │
+                                            │ (Store)
+                                            ▼
+                                     ┌───────────────┐
+                                     │  Cache        │
+                                     │  (Update)     │
+                                     └───────────────┘
+```
+
+## Comprehensive Overview
+- [Read the full overview](docs/overview.md)
+
 ## Getting Started
 
-This service provides stock ticker information using the Alpha Vantage API. Follow the instructions below to get started.
+Follow the instructions below to get started.
 
 ### Prerequisites
 
@@ -181,8 +207,10 @@ The response includes:
   ```
 
 - **Port conflicts**
-  If port 8080 is already in use, the `make port-forward` command will automatically kill existing processes using that port.
-
+  ```bash
+  # If port 8080 is already in use, the command will automatically kill existing processes using that port.
+  make port-forward
+  ```
 - **Container logs**
   ```bash
   # Check container logs
